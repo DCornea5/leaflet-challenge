@@ -1,8 +1,9 @@
 
-
+// create variables for the earthquake and tectonic plates data
 var earthquakeUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 var platesUrl = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
 
+// read the data
 d3.json(earthquakeUrl, function(data) {
   let earthquakeData = data.features
   d3.json(platesUrl, function(data) {
@@ -11,9 +12,9 @@ d3.json(earthquakeUrl, function(data) {
     createMap(earthquakeData,platesData)
   })
 })
-
+// create map function
 function createMap(earthquakeData,platesData) {
-
+// create variable for markers
     let earthquakeMarkers = earthquakeData.map((feature) =>
       L.circleMarker([feature.geometry.coordinates[1],feature.geometry.coordinates[0]],{
           radius: magCheck(feature.properties.mag), 
@@ -29,13 +30,13 @@ function createMap(earthquakeData,platesData) {
       "</h1><hr><h3>" + feature.properties.place +
       "</h3><hr><p>" + new Date(feature.properties.time) + "</p>")
     )
-
+// earthquakes 
     let earthquakes = L.layerGroup(earthquakeMarkers);
 
     function makePolyline(feature, layer){
       L.polyline(feature.geometry.coordinates);
     }
-    
+ // tectonic plates    
     let plates = L.geoJSON(platesData, {
       onEachFeature: makePolyline,
         style: {
